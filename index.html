@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="fonts/fonts.css"/>
+    <link rel="stylesheet" href="css/main.css"/>
+    <title>Todo</title>
+</head>
+<body>
+<!--<section class="login">-->
+<!--    <div>-->
+<!--        <form>-->
+<!--            <label>Login</label>-->
+<!--            <input id="form-login" placeholder="Login">-->
+<!--            <label>Password</label>-->
+<!--            <input id="form-password" placeholder="Password">-->
+<!--            <button type="submit" id="form-button-sign-up">Sign up</button>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</section>-->
+<section class="todo">
+    <div class="wrapper">
+        <div class="flex-column todo-box">
+            <div class="flex-column bg-list todo-radius todos_width">
+                <div class="new-task todo-padding">
+                    <form class="flex-row bg-form-and-input">
+                        <input type="text" ids="todo-new-task" placeholder="Add a new task...">
+                        <button type="submit" id="todo-button-new-task" class="button">Go</button>
+                    </form>
+                </div>
+                <div class="task-filter-box todo-padding">
+                    <div class="position-counter">
+                        <button type="submit" id="filter-task-all" class="button">all task</button>
+                        <div class="counter">9</div>
+                    </div>
+                    <div class="position-counter">
+                        <button type="submit" id="filter-finished" class="button">finished</button>
+                        <div class="counter">1</div>
+                    </div>
+                    <div class="position-counter">
+                        <button type="submit" id="filter-unfinished" class="button">unfinished</button>
+                        <div class="counter">15</div>
+                    </div>
+                </div>
+                <div class="black-line"></div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                    <input type="checkbox" class="c1"  />
+                    <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <input type="text" class="task title" value="tekst" />
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <input type="text" class="task title" value="tekst" />
+                        <input type="text" class="task description" value="tekstaaaas dsadawqs dasidasdm asodm asmd qw qjwd qwjdqw djkjwjwasm" />
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <p class="task title" value="tekst" >title P </p>
+                        <p class="task description" >tekstaaaas dsadawq PPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</p>
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <p class="task title" value="tekst" >title P </p>
+                        <p class="task description" >tekstaaaas dsadawq PPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</p>
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <p class="task title" value="tekst" >title P </p>
+                        <p class="task description" >tekstaaaas dsadawq PPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</p>
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <p class="task title" value="tekst" >title P </p>
+                        <p class="task description" >tekstaaaas dsadawq PPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</p>
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <p class="task title" value="tekst" >title P </p>
+                        <p class="task description" >tekstaaaas dsadawq PPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</p>
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <p class="task title" value="tekst" >title P </p>
+                        <p class="task description" >tekstaaaas dsadawq PPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</p>
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <p class="task title" value="tekst" >title P </p>
+                        <p class="task description" >tekstaaaas dsadawq PPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</p>
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <p class="task title" value="tekst" >title P </p>
+                        <p class="task description" >tekstaaaas dsadawq PPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</p>
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <p class="task title" value="tekst" >title P </p>
+                        <p class="task description" >tekstaaaas dsadawq PPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</p>
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <p class="task title" value="tekst" >title P </p>
+                        <p class="task description" >tekstaaaas dsadawq PPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</p>
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+                <div class="task-box flex-row todo-padding">
+                    <label class="checkbox">
+                        <input type="checkbox" class="c1"  />
+                        <span class="checkbox-span"></span>
+                    </label>
+                    <div class="flex-column task-detail-box">
+                        <div class="delete-task"></div>
+                        <p class="task title" value="tekst" >title P </p>
+                        <p class="task description" >tekstaaaas dsadawq PPPPPqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq</p>
+                    </div>
+                    <p class="date" >12.22.1111</p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+<!--<script src="js/main.js"></script>-->
+<!--<script src="js/route.js"></script>-->
+</body>
+</html>
