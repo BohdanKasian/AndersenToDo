@@ -86,7 +86,7 @@ class TodoRender {
             <section class="todo">
     <div class="wrapper">
         <div class="flex-column todo-box">
-            <div class="flex-column bg-list todo-radius todos_width" >
+            <div class="flex-column bg-list todo-height bg-box__width__radius" >
                 <div class="new-task todo-padding">
                     <form class="flex-row bg-form-and-input">
                         <input type="text" id="todo-new-task" placeholder="Add a new task...">
@@ -108,7 +108,7 @@ class TodoRender {
                     </div>
                 </div>
                 <div class="black-line"></div>
-                <div class="flex-column todos_width" id="all-task"></div>
+                <div class="flex-column bg-box__width__radius" id="all-task"></div>
             </div>
         </div>
     </div>
