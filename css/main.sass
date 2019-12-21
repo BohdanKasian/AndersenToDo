@@ -10,7 +10,9 @@
   @include flexbox
   @include justify-content(center)
 
-
+.checked-task
+  text-decoration: line-through
+  color: #676d74
 .checkbox
   cursor: pointer
   input
@@ -89,9 +91,12 @@ form
 
 .todo-box
   padding: 30px 0 20px
+  color: #ccd1d8
   .todos_width
     width: 100%
     max-width: 520px
+    &:first-child
+      min-height: 99vh
   .todo-radius
     border-radius: 15px
   .todo-padding
@@ -135,7 +140,7 @@ form
     word-break: break-word
     @include flexbox
     @include justify-content(space-between)
-    color: #ccd1d8
+
     .task-detail-box
       @include flex-grow(1)
       position: relative
