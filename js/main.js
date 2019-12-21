@@ -1,6 +1,5 @@
 'use strict'
 //17p41dcaik6
-
 fetch('https://todo-app-back.herokuapp.com/me', {
     method: 'GET',
     headers: {
@@ -9,7 +8,7 @@ fetch('https://todo-app-back.herokuapp.com/me', {
 }).then(response => {
     if (response.status === 200) {
         new TodoRender();
-        new GetAllTasks();
+        new GetAllTasks(null, null);
     } else {
         console.log("Неверный токен")
     }
@@ -74,8 +73,11 @@ class Authentication extends VerifyUser{
 new Authentication();
 
 class TodoRender {
-    constructor(){
-        this.htmlElement=null;
+    constructor(countAll, countFinish, countUnfinish){
+        this.countAll = countAll;
+        this.countFinish = countFinish;
+        this.countUnfinish = countUnfinish;
+        this.htmlElement = null;
         this.render()
     }
     createElement(){
@@ -93,15 +95,15 @@ class TodoRender {
                 <div class="task-filter-box todo-padding">
                     <div class="position-counter">
                         <button type="submit" id="filter-task-all" class="button">all task</button>
-                        <div class="counter">9</div>
+                        <div class="counter">${this.countAll}</div>
                     </div>
                     <div class="position-counter">
                         <button type="submit" id="filter-finished" class="button">finished</button>
-                        <div class="counter">1</div>
+                        <div class="counter">${this.countFinish}</div>
                     </div>
                     <div class="position-counter">
                         <button type="submit" id="filter-unfinished" class="button">unfinished</button>
-                        <div class="counter">15</div>
+                        <div class="counter">${this.countUnfinish}</div>
                     </div>
                 </div>
                 <div class="black-line"></div>
@@ -116,19 +118,32 @@ class TodoRender {
     setupEventListeners(){
         let newTaskInput = document.getElementById("todo-new-task");
         let newTaskButton = document.getElementById("todo-button-new-task");
+        let finishedButton = document.getElementById("filter-finished");
+        let unfinishedButton = document.getElementById("filter-unfinished");
+        let alltaskButton = document.getElementById("filter-task-all");
         newTaskButton.addEventListener("click", event =>{
             new CreateTask(event)
         } );
         newTaskInput.addEventListener("enter", event =>{
             new CreateTask(event)
         } );
+        finishedButton.addEventListener("click", event => {
+            new GetFinishedTask(event)
+        });
+        unfinishedButton.addEventListener("click", event => {
+            new GetUnfinishedTask(event)
+        });
+        alltaskButton.addEventListener("click", event =>{
+            new GetAllTasks(null, null)
+        })
 
     }
     render(){
         this.createElement();
-        document.body.innerHTML = ""
+        document.body.innerHTML = "";
         document.body.innerHTML = this.element;
         this.setupEventListeners();
+
 
     }
 }
@@ -155,7 +170,7 @@ class CreateTask {
                     'Authorization': `${localStorage.getItem("token")}`
                 }
             }).then(response => {
-                new GetAllTasks();
+                new GetAllTasks(null, null);
             });
             this.input.value = "";
         }else {alert("Введите задачу, или короткое название")}
@@ -163,8 +178,10 @@ class CreateTask {
 }
 
 class GetAllTasks {
-    constructor(){
+    constructor(finished, unfinished){
         this.allTasks = null;
+        this.unfinished = unfinished;
+        this.filterFinished = finished;
         this._getTasks()
     }
     _getTasks(){
@@ -176,13 +193,22 @@ class GetAllTasks {
             }
         }).then(response => response.json())
           .then(response => {this.allTasks = response;
-                console.log(response)
+
               this.receiveTask();
           })
     }
     receiveTask(){
+        new CounterTask(this.allTasks);
         document.getElementById("all-task").innerHTML = "";
-        this.allTasks.reverse().forEach(item => new RenderTask(item));
+        this.allTasks.reverse().forEach(item =>{
+            if (this.filterFinished === item.completed){
+                new RenderTask(item)
+            } else if (this.unfinished === item.completed){
+                new RenderTask(item)
+            } else if (this.unfinished === null & this.filterFinished === null){
+                new RenderTask(item)
+            }
+            });
         this.changesTask();
     }
     changesTask(){
@@ -263,7 +289,7 @@ class RemoveTask {
                 'Content-Type': 'application/json',
                 'Authorization': `${localStorage.getItem("token")}`
             }
-        }).then(result => new GetAllTasks(), reason => console.log(reason))
+        }).then(result => new GetAllTasks(null, null), reason => console.log(reason))
     }
 }
 
@@ -302,7 +328,6 @@ class EditTask extends CompletedTasks{
                 this.targetElement = ev.target.parentNode.parentNode;
                 item.value = `${item.value}`;
                 new SendEdit(item.value, this.targetElement.id, this.completed)
-                console.log(item.value)
             })
         })
     }
@@ -316,7 +341,6 @@ class SendEdit {
         this.send();
     }
     send(){
-        console.log(this.id)
         fetch(`https://todo-app-back.herokuapp.com/todos/${this.id}`, {
             method: 'PUT',
             body:
@@ -328,6 +352,53 @@ class SendEdit {
                 'Content-Type': 'application/json',
                 'Authorization': `${localStorage.getItem("token")}`
             }
-        }).then(result => new GetAllTasks())
+        }).then(result => new GetAllTasks(null, null))
+    }
+}
+
+class GetFinishedTask{
+    constructor(event){
+        this.event = event;
+        this.event.preventDefault();
+        this.takeTask();
+    }
+    takeTask(){
+        new GetAllTasks(true, null )
+    }
+
+}
+class GetUnfinishedTask{
+    constructor(event){
+        this.event = event;
+        this.event.preventDefault();
+        this.takeTask();
+    }
+    takeTask(){
+        new GetAllTasks(null, false)
+    }
+
+}
+
+class CounterTask {
+    constructor(allTask){
+        this.AllTask = allTask;
+        this.countFinishTask = [];
+        this.countUnfinishTask = [];
+
+        this.counter();
+    }
+    counter(){
+        this.AllTask.forEach(item => {
+
+
+            if (item.completed) {
+                this.countFinishTask.push(item.completed)
+            } else {
+                this.countUnfinishTask.push(item.completed)
+            }
+        });
+
+        new TodoRender(this.AllTask.length, this.countFinishTask.length, this.countUnfinishTask.length)
+
     }
 }
