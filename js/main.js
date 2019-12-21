@@ -1,18 +1,18 @@
 'use strict'
 //17p41dcaik6
-fetch('https://todo-app-back.herokuapp.com/me', {
-    method: 'GET',
-    headers: {
-        'Authorization': `${localStorage.getItem("token")}`
-    }
-}).then(response => {
-    if (response.status === 200) {
-        new TodoRender();
-        new GetAllTasks(null, null);
-    } else {
-        console.log("Неверный токен")
-    }
-}, reason => console.log("URL ИЛИ нет интернета", reason));
+// fetch('https://todo-app-back.herokuapp.com/me', {
+//     method: 'GET',
+//     headers: {
+//         'Authorization': `${localStorage.getItem("token")}`
+//     }
+// }).then(response => {
+//     if (response.status === 200) {
+//         new TodoRender();
+//         new GetAllTasks(null, null);
+//     } else {
+//         console.log("Неверный токен")
+//     }
+// }, reason => console.log("URL ИЛИ нет интернета", reason));
 class VerifyUser {
     constructor(login, password){
         this.login = login;
@@ -38,6 +38,7 @@ class VerifyUser {
             .then(response => {
                 localStorage.setItem("token", `${response.token}`);
                 new TodoRender()
+                new GetAllTasks(null, null);
             })
     }
 
