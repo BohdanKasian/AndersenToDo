@@ -18,8 +18,25 @@
             <input id="form-login" class="bg-form-and-input" placeholder="Login">
             <label class="login-label-margin">Password</label>
             <input id="form-password" class="bg-form-and-input" placeholder="Password">
-            <button type="submit" id="form-button-sign-up" class="button">Sign up</button>
+            <div class="login-button_margin">
+                <a class="button" href="#popup1" id="registration-link">Sign in</a>
+                <button type="submit" id="form-button-sign-up" class="button">Sign up</button>
+            </div>
         </form>
+        </div>
+        <div id="popup1" class="overlay">
+        <div class="flex-column todo-box login-padding registration  popup">
+            <form class="flex-column bg-list bg-box__width__radius login-form-width">
+                <a class="close" href="#">&times;</a>
+                <label>Login</label>
+                <input id="form-login-registration" class="bg-form-and-input" placeholder="Login">
+                <label class="login-label-margin">Password</label>
+                <input id="form-password-registration" class="bg-form-and-input" placeholder="Password">
+                <label class="login-label-margin">User name</label>
+                <input id="form-username-registration" class="bg-form-and-input" placeholder="Username">
+                <button type="submit" id="form-button-registration" class="button">Registration</button>
+            </form>
+        </div>
         </div>
     </div>
 </section>
@@ -88,6 +105,7 @@
 <!--    </div>-->
 <!--</section>-->
 <script type="module" src="js/main.js"></script>
+<!--<script type="module" src="js/registration.js"></script>-->
 <!--<script type="module" src="js/onLoad.js"></script>-->
 <!--<script src="js/route.js"></script>-->
 </body>

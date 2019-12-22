@@ -1,22 +1,23 @@
 'use strict'
 //17p41dcaik6
-// fetch('https://todo-app-back.herokuapp.com/me', {
-//     method: 'GET',
-//     headers: {
-//         'Authorization': `${localStorage.getItem("token")}`
-//     }
-// }).then(response => {
-//     if (response.status === 200) {
-//         new TodoRender();
-//         new GetAllTasks(null, null);
-//     } else {
-//         console.log("Неверный токен")
-//     }
-// }, reason => console.log("URL ИЛИ нет интернета", reason));
+fetch('https://todo-app-back.herokuapp.com/me', {
+    method: 'GET',
+    headers: {
+        'Authorization': `${localStorage.getItem("token")}`
+    }
+}).then(response => {
+    if (response.status === 200) {
+        new TodoRender();
+        new GetAllTasks(null, null);
+    } else {
+        console.log("Неверный токен")
+    }
+}, reason => console.log("URL ИЛИ нет интернета", reason));
 class VerifyUser {
-    constructor(login, password){
+    constructor(login, password, username){
         this.login = login;
         this.password = password;
+        this.username = username;
     }
     verification() {
         fetch('https://todo-app-back.herokuapp.com/login', {
@@ -41,8 +42,77 @@ class VerifyUser {
                 new GetAllTasks(null, null);
             })
     }
-
+    registration(){
+        fetch('https://todo-app-back.herokuapp.com/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body:
+                JSON.stringify({
+                    'email': `${this.login}`,
+                    'password': `${this.password}`,
+                    'username': `${this.username}`
+                }),
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+            })
+            .then(response => {
+                localStorage.setItem("token", `${response.token}`);
+                new TodoRender()
+                new GetAllTasks(null, null);
+            })
+    }
 }
+
+class Registration extends VerifyUser{
+    constructor(){
+        super();
+        this.registElem = document.getElementById("form-login-registration");
+        this.passwordElem = document.getElementById("form-password-registration");
+        this.usernameElem = document.getElementById("form-username-registration");
+        this.buttonRegistElem = document.getElementById("form-button-registration");
+        this.check();
+    }
+    check(){
+        this.buttonRegistElem.addEventListener("click", (event) =>{
+            event.preventDefault();
+            if (this.registElem.value == "" || this.passwordElem.value == "" || this.usernameElem.value == ""){
+                alert("Пожалуйста, заполните все поля");
+                return
+            }else {
+                this.login = this.registElem.value;
+                this.password = this.passwordElem.value;
+                this.username = this.usernameElem.value;
+                this.verifications();
+            }
+
+        });
+    }
+    verifications(){
+        let check = new VerifyUser(this.login, this.password, this.username);
+        check.registration()
+    }
+}
+class LoginListeners {
+    constructor(){
+        this.listeners();
+    }
+    listeners() {
+        document.getElementById("form-button-sign-up").addEventListener("click", (event) => {
+            event.preventDefault();
+            new Authentication()
+        });
+        document.getElementById("registration-link").addEventListener("click", () =>{
+            new Registration()
+        })
+    }
+}
+
+new LoginListeners();
 
 
 class Authentication extends VerifyUser{
@@ -54,8 +124,8 @@ class Authentication extends VerifyUser{
         this.check();
     }
     check(){
-        this.buttonLoginElem.addEventListener("click", (event) =>{
-            event.preventDefault();
+        // this.buttonLoginElem.addEventListener("click", (event) =>{
+        //     event.preventDefault();
             if (this.loginElem.value == "" || this.passwordElem.value == ""){
                 alert("Пожалуйста, заполните все поля")
             }else {
@@ -63,15 +133,16 @@ class Authentication extends VerifyUser{
                 this.password = this.passwordElem.value;
                 this.verifications();
             }
-
-        });
+        // });
     }
     verifications(){
-       let check =  new VerifyUser(this.login, this.password)
+        let check = new VerifyUser(this.login, this.password);
         check.verification()
     }
 }
-new Authentication();
+// new Authentication();
+
+
 
 class TodoRender {
     constructor(countAll, countFinish, countUnfinish){
@@ -84,6 +155,7 @@ class TodoRender {
     createElement(){
         this.element = `
             <section class="todo">
+            <button type="submit" id="log-out" class="button log-out">LogOut</button>
     <div class="wrapper">
         <div class="flex-column todo-box">
             <div class="flex-column bg-list todo-height bg-box__width__radius" >
@@ -122,12 +194,21 @@ class TodoRender {
         let finishedButton = document.getElementById("filter-finished");
         let unfinishedButton = document.getElementById("filter-unfinished");
         let alltaskButton = document.getElementById("filter-task-all");
+        let logOutButton = document.getElementById("log-out");
+
+        logOutButton.addEventListener("click", () => {
+            location.reload()
+            console.log("пока что ЛОГаут так пусть работает");
+            localStorage.removeItem("token")
+
+        });
         newTaskButton.addEventListener("click", event =>{
             new CreateTask(event)
         } );
         newTaskInput.addEventListener("enter", event =>{
             new CreateTask(event)
         } );
+
         finishedButton.addEventListener("click", event => {
             new GetFinishedTask(event)
         });
@@ -320,7 +401,7 @@ class CompletedTasks {
 class EditTask extends CompletedTasks{
     constructor(){
         super();
-        this.targetElement = null
+        this.targetElement = null;
         this.editListener()
     }
     editListener(){

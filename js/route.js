@@ -10,6 +10,7 @@ class LoginComponent extends Component {
     constructor(anchor) {
         super();
         this.anchor = document.createElement("section");
+        this.anchor.className = "login todo-height"
     }
 
     onInit() {
@@ -17,15 +18,17 @@ class LoginComponent extends Component {
     }
 
     render() {
-        return `<div>
-                    <form>
-                        <label>Login</label>
-                        <input id="form-login" placeholder="Login">
-                        <label>Password</label>
-                        <input id="form-password" placeholder="Password">
-                        <button type="submit" id="form-button-sign-up">Sign up</button>
-                    </form>
-                </div>`;
+        return `<div class="wrapper">
+        <div class="flex-column todo-box login-padding">
+        <form class="flex-column bg-list bg-box__width__radius login-form-width">
+            <label>Login</label>
+            <input id="form-login" class="bg-form-and-input" placeholder="Login">
+            <label class="login-label-margin">Password</label>
+            <input id="form-password" class="bg-form-and-input" placeholder="Password">
+            <button type="submit" id="form-button-sign-up" class="button">Sign up</button>
+        </form>
+        </div>
+    </div>`;
     }
 
     setupListeners() {
