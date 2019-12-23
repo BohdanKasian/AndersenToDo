@@ -13,6 +13,8 @@ fetch('https://todo-app-back.herokuapp.com/me', {
         console.log("Неверный токен")
     }
 }, reason => console.log("URL ИЛИ нет интернета", reason));
+
+
 class VerifyUser {
     constructor(login, password, username){
         this.login = login;
@@ -20,51 +22,7 @@ class VerifyUser {
         this.username = username;
     }
     verification() {
-        fetch('https://todo-app-back.herokuapp.com/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body:
-                JSON.stringify({
-                    email: `${this.login}`,
-                    password: `${this.password}`,
-                }),
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json()
-                }
-            })
-            .then(response => {
-                localStorage.setItem("token", `${response.token}`);
-                new TodoRender()
-                new GetAllTasks(null, null);
-            })
-    }
-    registration(){
-        fetch('https://todo-app-back.herokuapp.com/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body:
-                JSON.stringify({
-                    'email': `${this.login}`,
-                    'password': `${this.password}`,
-                    'username': `${this.username}`
-                }),
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json()
-                }
-            })
-            .then(response => {
-                localStorage.setItem("token", `${response.token}`);
-                new TodoRender()
-                new GetAllTasks(null, null);
-            })
+        service.sendLogin(this.login, this.password)
     }
 }
 
@@ -87,32 +45,24 @@ class Registration extends VerifyUser{
                 this.login = this.registElem.value;
                 this.password = this.passwordElem.value;
                 this.username = this.usernameElem.value;
-                this.verifications();
+                // this.verifications();
+                new  Service().sendRegistration(this.login, this.password, this.username)
             }
 
         });
     }
-    verifications(){
-        let check = new VerifyUser(this.login, this.password, this.username);
-        check.registration()
-    }
-}
-class LoginListeners {
-    constructor(){
-        this.listeners();
-    }
-    listeners() {
-        document.getElementById("form-button-sign-up").addEventListener("click", (event) => {
-            event.preventDefault();
-            new Authentication()
-        });
-        document.getElementById("registration-link").addEventListener("click", () =>{
-            new Registration()
-        })
-    }
 }
 
-new LoginListeners();
+(function () {
+    document.getElementById("form-button-sign-up").addEventListener("click", (event) => {
+        event.preventDefault();
+        new Authentication()
+    });
+    document.getElementById("registration-link").addEventListener("click", () => {
+        new Registration()
+    })
+}());
+
 
 
 class Authentication extends VerifyUser{
@@ -124,8 +74,6 @@ class Authentication extends VerifyUser{
         this.check();
     }
     check(){
-        // this.buttonLoginElem.addEventListener("click", (event) =>{
-        //     event.preventDefault();
             if (this.loginElem.value == "" || this.passwordElem.value == ""){
                 alert("Пожалуйста, заполните все поля")
             }else {
@@ -133,16 +81,12 @@ class Authentication extends VerifyUser{
                 this.password = this.passwordElem.value;
                 this.verifications();
             }
-        // });
     }
     verifications(){
         let check = new VerifyUser(this.login, this.password);
         check.verification()
     }
 }
-// new Authentication();
-
-
 
 class TodoRender {
     constructor(countAll, countFinish, countUnfinish){
@@ -216,7 +160,7 @@ class TodoRender {
             new GetUnfinishedTask(event)
         });
         alltaskButton.addEventListener("click", event =>{
-            new GetAllTasks(null, null)
+            getAllTask.getTasks(getAllTask);
         })
 
     }
@@ -239,23 +183,7 @@ class CreateTask {
     }
     newTask(){
         this.event.preventDefault();
-        if (this.input.value.length >= 5) {
-
-            fetch('https://todo-app-back.herokuapp.com/todos', {
-                method: 'POST',
-                body:
-                    JSON.stringify({
-                        text: `${this.input.value}`,
-                    }),
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `${localStorage.getItem("token")}`
-                }
-            }).then(response => {
-                new GetAllTasks(null, null);
-            });
-            this.input.value = "";
-        }else {alert("Введите задачу, или короткое название")}
+        service.sendNewTask(this.input);
     }
 }
 
@@ -264,22 +192,13 @@ class GetAllTasks {
         this.allTasks = null;
         this.unfinished = unfinished;
         this.filterFinished = finished;
-        this._getTasks()
-    }
-    _getTasks(){
-        fetch('https://todo-app-back.herokuapp.com/todos', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${localStorage.getItem("token")}`
-            }
-        }).then(response => response.json())
-          .then(response => {this.allTasks = response;
 
-              this.receiveTask();
-          })
     }
-    receiveTask(){
+    getTasks(filter){
+        this.allTasks = service.getAllTasks(filter);
+    }
+    receiveTask(allTasks){
+        this.allTasks = allTasks;
         new CounterTask(this.allTasks);
         document.getElementById("all-task").innerHTML = "";
         this.allTasks.reverse().forEach(item =>{
@@ -354,28 +273,11 @@ class DeleteTask {
         document.querySelectorAll(".delete-task").forEach(item =>{
             item.addEventListener("click", ev => {
                 this.targetElement = ev.target.parentNode.parentNode;
-                new RemoveTask(this.targetElement.id);
+                service.sendDelete(this.targetElement.id);
             })
         })
     }
 }
-class RemoveTask {
-    constructor(id){
-        this.id = id;
-        this.sendDelete();
-    }
-    sendDelete(){
-        fetch(`https://todo-app-back.herokuapp.com/todos/${this.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${localStorage.getItem("token")}`
-            }
-        }).then(result => new GetAllTasks(null, null), reason => console.log(reason))
-    }
-}
-
-
 
 class CompletedTasks {
     constructor(){
@@ -423,18 +325,7 @@ class SendEdit {
         this.send();
     }
     send(){
-        fetch(`https://todo-app-back.herokuapp.com/todos/${this.id}`, {
-            method: 'PUT',
-            body:
-                JSON.stringify({
-                    text: `${this.value}`,
-                    completed: this.completed
-                }),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${localStorage.getItem("token")}`
-            }
-        }).then(result => new GetAllTasks(null, null))
+        service.sendEdit(this.id, this.value, this.completed)
     }
 }
 
@@ -445,10 +336,13 @@ class GetFinishedTask{
         this.takeTask();
     }
     takeTask(){
-        new GetAllTasks(true, null )
+        filterFinishedTask.getTasks(filterFinishedTask);
+        // new GetAllTasks(true, null )
     }
 
 }
+
+const filterFinishedTask = new GetAllTasks(true, null);
 class GetUnfinishedTask{
     constructor(event){
         this.event = event;
@@ -456,10 +350,13 @@ class GetUnfinishedTask{
         this.takeTask();
     }
     takeTask(){
-        new GetAllTasks(null, false)
+        filterUninishedTask.getTasks(filterUninishedTask);
+        // new GetAllTasks(null, false)
     }
 
 }
+
+const filterUninishedTask = new GetAllTasks(null, false);
 
 class CounterTask {
     constructor(allTask){
@@ -471,8 +368,6 @@ class CounterTask {
     }
     counter(){
         this.AllTask.forEach(item => {
-
-
             if (item.completed) {
                 this.countFinishTask.push(item.completed)
             } else {
@@ -484,3 +379,119 @@ class CounterTask {
 
     }
 }
+
+
+
+
+
+class Service {
+    constructor(){
+        this.headersAuth = {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${localStorage.getItem("token")}`
+            }
+        };
+        this.headersPost = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+
+    }
+    getAllTasks(filter){
+        //All task
+        fetch('https://todo-app-back.herokuapp.com/todos', {
+            method: 'GET',
+            headers: this.headersAuth.headers
+        }).then(response => response.json())
+            .then(response => {
+                filter.receiveTask(response)
+            })
+    }
+    sendLogin(login, password) {
+        //login
+        fetch('https://todo-app-back.herokuapp.com/login', {
+            method: 'POST',
+            headers: this.headersPost.headers,
+            body:
+                JSON.stringify({
+                    email: `${login}`,
+                    password: `${password}`,
+                }),
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+            })
+            .then(response => {
+                localStorage.setItem("token", `${response.token}`);
+                new TodoRender()
+                new GetAllTasks(null, null);
+            })
+    }
+    sendRegistration(login, password, username){
+        //registration
+        fetch('https://todo-app-back.herokuapp.com/register', {
+            method: 'POST',
+            headers: this.headersPost.headers,
+            body:
+                JSON.stringify({
+                    'email': `${login}`,
+                    'password': `${password}`,
+                    'username': `${username}`
+                }),
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json()
+                }
+            })
+            .then(response => {
+                localStorage.setItem("token", `${response.token}`);
+                new TodoRender()
+                new GetAllTasks(null, null);
+            })
+        }
+    sendNewTask(input){
+        //new Post
+        if (input.value.length >= 5) {
+
+            fetch('https://todo-app-back.herokuapp.com/todos', {
+                method: 'POST',
+                body:
+                    JSON.stringify({
+                        text: `${input.value}`,
+                    }),
+                headers: this.headersAuth.headers
+            }).then(response => {
+                new GetAllTasks(null, null);
+            });
+            input.value = "";
+        }else {alert("Введите задачу, или короткое название")}
+    }
+    sendDelete(id){
+        //Delete Task
+        fetch(`https://todo-app-back.herokuapp.com/todos/${id}`, {
+            method: 'DELETE',
+            headers: this.headersAuth.headers
+        }).then(result => new GetAllTasks(null, null), reason => console.log(reason))
+
+    }
+    sendEdit(id, value, completed){
+        //send Edit
+        fetch(`https://todo-app-back.herokuapp.com/todos/${id}`, {
+            method: 'PUT',
+            body:
+                JSON.stringify({
+                    text: `${value}`,
+                    completed: completed
+                }),
+            headers: this.headersAuth.headers
+        }).then(result => new GetAllTasks(null, null))
+    }
+
+}
+const service = new Service();
+const getAllTask = new GetAllTasks(null, null);

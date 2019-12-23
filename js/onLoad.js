@@ -1,5 +1,5 @@
 "use strict";
-import "./main.js";
+import "./init.js";
 // window.addEventListener("load", function () {
 //
 // });
