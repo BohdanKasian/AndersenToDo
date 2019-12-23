@@ -1,5 +1,9 @@
 'use strict'
+import authentication from "./modules/verification/AuthAndRegist/authentication";
+import registration from "./modules/verification/AuthAndRegist/registration";
+
 //17p41dcaik6
+
 fetch('https://todo-app-back.herokuapp.com/me', {
     method: 'GET',
     headers: {
@@ -14,79 +18,25 @@ fetch('https://todo-app-back.herokuapp.com/me', {
     }
 }, reason => console.log("URL ИЛИ нет интернета", reason));
 
-
-class VerifyUser {
-    constructor(login, password, username){
-        this.login = login;
-        this.password = password;
-        this.username = username;
-    }
-    verification() {
-        service.sendLogin(this.login, this.password)
-    }
-}
-
-class Registration extends VerifyUser{
-    constructor(){
-        super();
-        this.registElem = document.getElementById("form-login-registration");
-        this.passwordElem = document.getElementById("form-password-registration");
-        this.usernameElem = document.getElementById("form-username-registration");
-        this.buttonRegistElem = document.getElementById("form-button-registration");
-        this.check();
-    }
-    check(){
-        this.buttonRegistElem.addEventListener("click", (event) =>{
-            event.preventDefault();
-            if (this.registElem.value == "" || this.passwordElem.value == "" || this.usernameElem.value == ""){
-                alert("Пожалуйста, заполните все поля");
-                return
-            }else {
-                this.login = this.registElem.value;
-                this.password = this.passwordElem.value;
-                this.username = this.usernameElem.value;
-                // this.verifications();
-                new  Service().sendRegistration(this.login, this.password, this.username)
-            }
-
-        });
-    }
-}
-
 (function () {
     document.getElementById("form-button-sign-up").addEventListener("click", (event) => {
         event.preventDefault();
-        new Authentication()
+        authentication.check()
     });
     document.getElementById("registration-link").addEventListener("click", () => {
-        new Registration()
+        registration.check()
     })
 }());
 
 
 
-class Authentication extends VerifyUser{
-    constructor(){
-        super();
-        this.loginElem = document.getElementById("form-login");
-        this.passwordElem = document.getElementById("form-password");
-        this.buttonLoginElem = document.getElementById("form-button-sign-up");
-        this.check();
-    }
-    check(){
-            if (this.loginElem.value == "" || this.passwordElem.value == ""){
-                alert("Пожалуйста, заполните все поля")
-            }else {
-                this.login = this.loginElem.value;
-                this.password = this.passwordElem.value;
-                this.verifications();
-            }
-    }
-    verifications(){
-        let check = new VerifyUser(this.login, this.password);
-        check.verification()
-    }
-}
+
+
+
+
+
+
+
 
 class TodoRender {
     constructor(countAll, countFinish, countUnfinish){
@@ -384,114 +334,5 @@ class CounterTask {
 
 
 
-class Service {
-    constructor(){
-        this.headersAuth = {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `${localStorage.getItem("token")}`
-            }
-        };
-        this.headersPost = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
 
-    }
-    getAllTasks(filter){
-        //All task
-        fetch('https://todo-app-back.herokuapp.com/todos', {
-            method: 'GET',
-            headers: this.headersAuth.headers
-        }).then(response => response.json())
-            .then(response => {
-                filter.receiveTask(response)
-            })
-    }
-    sendLogin(login, password) {
-        //login
-        fetch('https://todo-app-back.herokuapp.com/login', {
-            method: 'POST',
-            headers: this.headersPost.headers,
-            body:
-                JSON.stringify({
-                    email: `${login}`,
-                    password: `${password}`,
-                }),
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json()
-                }
-            })
-            .then(response => {
-                localStorage.setItem("token", `${response.token}`);
-                new TodoRender()
-                new GetAllTasks(null, null);
-            })
-    }
-    sendRegistration(login, password, username){
-        //registration
-        fetch('https://todo-app-back.herokuapp.com/register', {
-            method: 'POST',
-            headers: this.headersPost.headers,
-            body:
-                JSON.stringify({
-                    'email': `${login}`,
-                    'password': `${password}`,
-                    'username': `${username}`
-                }),
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json()
-                }
-            })
-            .then(response => {
-                localStorage.setItem("token", `${response.token}`);
-                new TodoRender()
-                new GetAllTasks(null, null);
-            })
-        }
-    sendNewTask(input){
-        //new Post
-        if (input.value.length >= 5) {
-
-            fetch('https://todo-app-back.herokuapp.com/todos', {
-                method: 'POST',
-                body:
-                    JSON.stringify({
-                        text: `${input.value}`,
-                    }),
-                headers: this.headersAuth.headers
-            }).then(response => {
-                new GetAllTasks(null, null);
-            });
-            input.value = "";
-        }else {alert("Введите задачу, или короткое название")}
-    }
-    sendDelete(id){
-        //Delete Task
-        fetch(`https://todo-app-back.herokuapp.com/todos/${id}`, {
-            method: 'DELETE',
-            headers: this.headersAuth.headers
-        }).then(result => new GetAllTasks(null, null), reason => console.log(reason))
-
-    }
-    sendEdit(id, value, completed){
-        //send Edit
-        fetch(`https://todo-app-back.herokuapp.com/todos/${id}`, {
-            method: 'PUT',
-            body:
-                JSON.stringify({
-                    text: `${value}`,
-                    completed: completed
-                }),
-            headers: this.headersAuth.headers
-        }).then(result => new GetAllTasks(null, null))
-    }
-
-}
-const service = new Service();
 const getAllTask = new GetAllTasks(null, null);
